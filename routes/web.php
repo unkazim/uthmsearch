@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\PropertyController;
 
 // Default route redirects to login
 Route::get('/', function (): RedirectResponse {
@@ -13,7 +14,9 @@ Route::get('/', function (): RedirectResponse {
 Auth::routes();
 
 // Protected routes (example)
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/home', function () {
+    return view('home');
+})->middleware(['auth'])->name('home');
 
 // Login Routes
 Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
@@ -25,3 +28,11 @@ Route::post('/register', [App\Http\Controllers\Auth\LoginController::class, 'reg
 // Add these routes for registration
 Route::get('register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+
+Route::get('/properties/search', [PropertyController::class, 'search'])
+    ->name('properties.search')
+    ->middleware(['auth']);
+
+Route::get('/properties/{property}', [PropertyController::class, 'show'])
+    ->name('properties.show')
+    ->middleware(['auth']);
