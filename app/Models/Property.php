@@ -18,9 +18,9 @@ class Property extends Model
         'bedrooms',
         'bathrooms',
         'image',
-        'status', // available, rented, maintenance
-        'property_type', // house, apartment, room
-        'furnished', // yes, no, partially
+        'status',
+        'property_type',
+        'furnished',
         'size',
         'contact_name',
         'contact_phone',
@@ -28,11 +28,12 @@ class Property extends Model
         'address',
         'postcode',
         'state',
-        'features', // JSON field for additional features
-        'is_active', // for admin to hide/show property
+        'features',
+        'is_active'
     ];
 
     protected $casts = [
+        'price' => 'decimal:2',
         'features' => 'array',
         'is_active' => 'boolean',
     ];

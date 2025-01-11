@@ -5,36 +5,10 @@ use Illuminate\Support\Str;
 @endphp
 
 @section('content')
-<div class="min-h-screen bg-gray-50">
-    <!-- Navigation Bar -->
-    <nav class="bg-gray-800 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Back to Search Button -->
-                <div class="flex items-center">
-                    <a href="{{ route('home') }}" class="flex items-center text-white hover:text-gray-200 transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                        </svg>
-                        Back to Search
-                    </a>
-                </div>
-
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-white">UTHM</h1>
-                </div>
-
-                <!-- Profile -->
-                <div class="flex items-center">
-                    <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}" alt="Profile">
-                </div>
-            </div>
-        </div>
-    </nav>
-
+<div class="min-h-screen bg-gray-50 pt-16">
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Search Results Header with Back Button -->
+        <!-- Search Results Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
                 @if($searchQuery)
@@ -51,13 +25,13 @@ use Illuminate\Support\Str;
                 @endif
             </div>
 
-            <!-- Floating Back Button -->
+            <!-- Back to Search Button -->
             <a href="{{ route('home') }}" 
-               class="fixed bottom-8 right-8 bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 z-50">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+               class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                <span>New Search</span>
+                Back to Search
             </a>
         </div>
 
@@ -70,9 +44,8 @@ use Illuminate\Support\Str;
 
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Sort by</h2>
                     <select name="sort" class="w-full mb-6 rounded-md border-gray-300" onchange="this.form.submit()">
-                        <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price (highest first)</option>
-                        <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price (lowest first)</option>
-                        <option value="bedrooms" {{ request('sort') == 'bedrooms' ? 'selected' : '' }}>Most bedrooms</option>
+                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price (lowest first)</option>
+                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price (highest first)</option>
                     </select>
 
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Price Range</h2>
@@ -168,5 +141,14 @@ use Illuminate\Support\Str;
             </div>
         </div>
     </div>
+
+    <!-- Floating New Search Button -->
+    <a href="{{ route('home') }}" 
+       class="fixed bottom-8 right-8 bg-primary-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-primary-700 transition-colors flex items-center space-x-2 z-50">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span>New Search</span>
+    </a>
 </div>
 @endsection 

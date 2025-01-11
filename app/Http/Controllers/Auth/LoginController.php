@@ -3,61 +3,51 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
+    use AuthenticatesUsers;
+
     /**
-     * Show the application's login form.
+     * Create a new controller instance.
      *
-     * @return \Illuminate\View\View
+     * @return void
      */
-    public function showLoginForm()
+    public function __construct()
     {
-        return view('auth.login');
+        $this->middleware('guest')->except('logout');
     }
 
     /**
-     * Handle a login request to the application.
+     * Get the post login redirect path.
+     *
+     * @return string
+     */
+    protected function redirectTo()
+    {
+        if (auth()->user()->is_admin) {
+            return route('admin.properties.index');
+        }
+        
+        return route('home');
+    }
+
+    /**
+     * The user has been authenticated.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  mixed  $user
+     * @return mixed
      */
-    public function login(Request $request)
+    protected function authenticated(Request $request, $user)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (auth()->attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended('home');
+        if ($user->is_admin) {
+            return redirect()->route('admin.properties.index');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
-    }
-
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        auth()->login($user);
-
-        return redirect()->intended('home');
+        return redirect()->route('home');
     }
 }
