@@ -21,13 +21,9 @@ class Property extends Model
         'status',
         'property_type',
         'furnished',
-        'size',
         'contact_name',
         'contact_phone',
         'contact_email',
-        'address',
-        'postcode',
-        'state',
         'features',
         'is_active'
     ];
