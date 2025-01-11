@@ -2,12 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Models\Property;
 
 class AdminService
 {
-    public function getAdmin()
+    public function getPropertyStats()
     {
-        return User::where('is_admin', true)->first();
+        return [
+            'total' => Property::count(),
+            'available' => Property::where('status', 'available')->count(),
+            'rented' => Property::where('status', 'rented')->count(),
+        ];
     }
 } 

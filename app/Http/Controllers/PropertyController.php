@@ -10,50 +10,46 @@ class PropertyController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $sortBy = $request->input('sort', 'price_high');
+        $sortBy = $request->input('sort_by', 'price');
+        $sortOrder = $request->input('sort_order', 'desc');
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
         $bedrooms = $request->input('bedrooms');
 
         $properties = Property::query()
-            ->active() // Only show active listings
-            ->when($query, function($query, $searchTerm) {
-                return $query->search($searchTerm);
+            ->where('is_active', true)
+            ->when($query, function ($q) use ($query) {
+                return $q->where(function ($q) use ($query) {
+                    $q->where('location', 'like', "%{$query}%")
+                      ->orWhere('area', 'like', "%{$query}%")
+                      ->orWhere('title', 'like', "%{$query}%");
+                });
             })
-            ->when($minPrice, function($query, $price) {
-                return $query->where('price', '>=', $price);
+            ->when($minPrice, function ($q) use ($minPrice) {
+                return $q->where('price', '>=', $minPrice);
             })
-            ->when($maxPrice, function($query, $price) {
-                return $query->where('price', '<=', $price);
+            ->when($maxPrice, function ($q) use ($maxPrice) {
+                return $q->where('price', '<=', $maxPrice);
             })
-            ->when($bedrooms, function($query, $beds) {
-                return $query->where('bedrooms', $beds);
+            ->when($bedrooms, function ($q) use ($bedrooms) {
+                return $q->where('bedrooms', $bedrooms);
             })
-            ->when($sortBy, function($query, $sortBy) {
-                return match($sortBy) {
-                    'price_high' => $query->orderByDesc('price'),
-                    'price_low' => $query->orderBy('price'),
-                    'bedrooms' => $query->orderByDesc('bedrooms'),
-                    default => $query
-                };
-            })
-            ->get();
+            ->orderBy($sortBy, $sortOrder)
+            ->paginate(12);
 
-        return view('property.search-results', [
+        return view('properties.search', [
             'properties' => $properties,
-            'searchQuery' => $query,
-            'filters' => [
-                'sort' => $sortBy,
-                'min_price' => $minPrice,
-                'max_price' => $maxPrice,
-                'bedrooms' => $bedrooms
-            ]
+            'query' => $query,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
+            'bedrooms' => $bedrooms
         ]);
     }
 
-    public function show($id)
+    public function show(Property $property)
     {
-        // Property details page logic here
-        return view('property.show');
+        return view('properties.show', compact('property'));
     }
 } 

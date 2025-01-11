@@ -21,6 +21,7 @@ class Property extends Model
         'status',
         'property_type',
         'furnished',
+        'size',
         'contact_name',
         'contact_phone',
         'contact_email',
@@ -29,9 +30,9 @@ class Property extends Model
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'features' => 'array',
         'is_active' => 'boolean',
+        'price' => 'decimal:2',
+        'features' => 'array'
     ];
 
     // Scope for active listings

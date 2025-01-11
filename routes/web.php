@@ -44,9 +44,15 @@ Route::get('/properties/{property}', [PropertyController::class, 'show'])
     ->name('properties.show')
     ->middleware(['auth']);
 
+
 // Admin Routes
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::resource('properties', AdminPropertyController::class);
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('properties', App\Http\Controllers\Admin\PropertyController::class);
     });
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
