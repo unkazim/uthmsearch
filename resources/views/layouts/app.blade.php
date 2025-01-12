@@ -12,12 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
     <!-- Scripts and Styles -->
-    @if (app()->environment('local'))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-        <link rel="stylesheet" href="{{ asset('build/assets/app.css') }}">
-        <script src="{{ asset('build/assets/app.js') }}" defer></script>
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
@@ -46,7 +41,6 @@
                             </form>
                         @else
                             <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900">Login</a>
-                            <a href="{{ route('register') }}" class="text-gray-700 hover:text-gray-900">Register</a>
                         @endauth
                     </div>
                 </div>
