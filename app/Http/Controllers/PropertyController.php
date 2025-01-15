@@ -50,6 +50,11 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
+        // Store the previous URL if it's from the search page
+        if (url()->previous() !== url()->current()) {
+            session(['search_results_url' => url()->previous()]);
+        }
+
         return view('properties.show', compact('property'));
     }
 } 

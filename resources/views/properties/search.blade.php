@@ -49,22 +49,22 @@
                         </div>
                     </div>
 
-                    <!-- Bedrooms -->
+                    <!-- Bedrooms Filter -->
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Bedrooms</h3>
                         <select name="bedrooms" class="w-full rounded-md border-gray-300">
                             <option value="">Any</option>
                             @foreach(range(1, 5) as $count)
-                                <option value="{{ $count }}" {{ $bedrooms == $count ? 'selected' : '' }}>
+                                <option value="{{ $count }}" {{ request('bedrooms') == $count ? 'selected' : '' }}>
                                     {{ $count }} {{ Str::plural('bedroom', $count) }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
-                    <!-- Sort -->
+                    <!-- Sort Options -->
                     <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Sort by</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Sort By</h3>
                         <select name="sort_by" class="w-full rounded-md border-gray-300">
                             <option value="price" {{ $sortBy == 'price' ? 'selected' : '' }}>Price</option>
                             <option value="created_at" {{ $sortBy == 'created_at' ? 'selected' : '' }}>Date</option>
@@ -75,9 +75,18 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700">
-                        Apply Filters
-                    </button>
+                    <div class="flex flex-col space-y-3">
+                        <button type="submit" 
+                                class="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors">
+                            Apply Filters
+                        </button>
+
+                        <!-- Clear Filters Button -->
+                        <a href="{{ route('properties.search', ['query' => $query]) }}" 
+                           class="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition-colors text-center border border-gray-300">
+                            Clear Filters
+                        </a>
+                    </div>
                 </form>
             </div>
 
