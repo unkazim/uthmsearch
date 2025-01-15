@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 <div class="py-12">
@@ -30,11 +30,11 @@
                     <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
                     <div class="flex space-x-4">
                         <a href="{{ route('admin.properties.create') }}" 
-                           class="btn-primary">
+                           class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
                             Add New Property
                         </a>
                         <a href="{{ route('admin.properties.index') }}" 
-                           class="btn-secondary">
+                           class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
                             View All Properties
                         </a>
                     </div>

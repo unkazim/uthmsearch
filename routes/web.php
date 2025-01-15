@@ -2,57 +2,42 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\Admin\PropertyController as AdminPropertyController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 
-// Default route redirects to login
+// Authentication routes
+Auth::routes();
+
+// Home route
 Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->is_admin) {
-            return redirect()->route('admin.properties.index');
+            return redirect()->route('admin.dashboard');
         }
         return redirect()->route('home');
     }
     return redirect()->route('login');
 })->name('welcome');
 
-// Authentication routes
-Auth::routes();
-
-// Protected routes (example)
-Route::get('/home', function () {
-    return view('home');
-})->middleware(['auth'])->name('home');
-
-// Login Routes
-Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
-
-// Add these routes
-Route::post('/register', [App\Http\Controllers\Auth\LoginController::class, 'register'])->name('register');
-
-// Add these routes for registration
-Route::get('register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
-
-Route::get('/properties/search', [PropertyController::class, 'search'])
-    ->name('properties.search')
-    ->middleware(['auth']);
-
-Route::get('/properties/{property}', [PropertyController::class, 'show'])
-    ->name('properties.show')
-    ->middleware(['auth']);
-
-
-// Admin Routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-        Route::resource('properties', App\Http\Controllers\Admin\PropertyController::class);
-    });
+// User routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/properties/search', [PropertyController::class, 'search'])->name('properties.search');
+    Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/properties/{property}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+// Admin routes
+Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('properties', AdminPropertyController::class);
+});

@@ -125,6 +125,115 @@
                         </ul>
                     </div>
                 @endif
+
+                <!-- Review Section -->
+                <div class="mt-8">
+                    <h3 class="text-2xl font-bold mb-4">Reviews</h3>
+
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <!-- Review Form -->
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h4 class="text-lg font-semibold mb-4">Write a Review</h4>
+                        
+                        @auth
+                            <form action="{{ route('reviews.store', $property->id) }}" method="POST">
+                                @csrf
+                                
+                                <!-- Star Rating -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                    <div class="flex items-center space-x-1">
+                                        <input type="hidden" name="rating" id="selected_rating" value="" required>
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <button type="button" 
+                                                    class="star-rating p-1 text-gray-300 hover:text-yellow-400" 
+                                                    data-rating="{{ $i }}"
+                                                    onclick="selectRating({{ $i }})">
+                                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                </svg>
+                                            </button>
+                                        @endfor
+                                    </div>
+                                    @error('rating')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Review Comment -->
+                                <div class="mb-4">
+                                    <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+                                    <textarea id="comment" 
+                                              name="comment" 
+                                              rows="4" 
+                                              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                              required></textarea>
+                                    @error('comment')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <button type="submit" 
+                                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+                                    Submit Review
+                                </button>
+                            </form>
+                        @else
+                            <p class="text-gray-600">Please <a href="{{ route('login') }}" class="text-blue-600 hover:underline">login</a> to write a review.</p>
+                        @endauth
+                    </div>
+
+                    <!-- Add this JavaScript at the bottom of your view -->
+                    <script>
+                        function selectRating(rating) {
+                            document.getElementById('selected_rating').value = rating;
+                            
+                            // Update star colors
+                            const stars = document.querySelectorAll('.star-rating');
+                            stars.forEach((star, index) => {
+                                if (index < rating) {
+                                    star.classList.remove('text-gray-300');
+                                    star.classList.add('text-yellow-400');
+                                } else {
+                                    star.classList.remove('text-yellow-400');
+                                    star.classList.add('text-gray-300');
+                                }
+                            });
+                        }
+                    </script>
+
+                    <!-- Reviews List -->
+                    <div class="space-y-6">
+                        @forelse ($property->reviews()->with('user')->latest()->get() as $review)
+                            <div class="bg-white rounded-lg shadow p-6">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <svg class="w-5 h-5 {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}" 
+                                                     fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                </svg>
+                                            @endfor
+                                        </div>
+                                        <p class="text-gray-600">{{ $review->comment }}</p>
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        <p>{{ $review->user->name }}</p>
+                                        <p>{{ $review->created_at->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-gray-500">No reviews yet. Be the first to review this property!</p>
+                        @endforelse
+                    </div>
+                </div>
             </div>
         </div>
     </div>

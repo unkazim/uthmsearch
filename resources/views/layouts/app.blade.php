@@ -32,13 +32,16 @@
                     <!-- Navigation Links -->
                     <div class="flex items-center space-x-4">
                         @auth
-                            @if(auth()->user()->is_admin)
-                                <a href="{{ route('admin.properties.index') }}" class="text-gray-700 hover:text-gray-900">Admin</a>
-                            @endif
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="text-gray-700 hover:text-gray-900">Logout</button>
-                            </form>
+                            <div class="flex items-center space-x-4">
+                                <a href="{{ route('profile.show') }}" class="text-gray-700 hover:text-gray-900">Profile</a>
+                                @if(auth()->user()->is_admin)
+                                    <a href="{{ route('admin.properties.index') }}" class="text-gray-700 hover:text-gray-900">Admin</a>
+                                @endif
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="text-gray-700 hover:text-gray-900">Logout</button>
+                                </form>
+                            </div>
                         @else
                             <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900">Login</a>
                         @endauth

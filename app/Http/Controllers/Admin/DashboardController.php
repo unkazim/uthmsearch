@@ -7,6 +7,12 @@ use App\Models\Property;
 
 class DashboardController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('admin');
+    }
+
     public function index()
     {
         $totalProperties = Property::count();
