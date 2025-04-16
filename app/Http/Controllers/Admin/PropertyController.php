@@ -23,10 +23,17 @@ class PropertyController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'price' => 'required|numeric',
-            'location' => 'required|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'area' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'bedrooms' => 'required|integer|min:0',
+            'bathrooms' => 'required|integer|min:0',
+            'property_type' => 'required|in:house,apartment,room',
+            'contact_name' => 'required|string|max:255',
+            'contact_phone' => 'required|string|max:255',
+            'contact_email' => 'required|email|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -38,29 +45,31 @@ class PropertyController extends Controller
         Property::create($validated);
 
         return redirect()->route('admin.properties.index')
-            ->with('success', 'Property created successfully.');
-    }
-
-    public function edit(Property $property)
-    {
-        return view('admin.properties.edit', compact('property'));
+            ->with('success', 'Property created successfully');
     }
 
     public function update(Request $request, Property $property)
     {
         $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'price' => 'required|numeric',
-            'location' => 'required|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'area' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'bedrooms' => 'required|integer|min:0',
+            'bathrooms' => 'required|integer|min:0',
+            'property_type' => 'required|in:house,apartment,room',
+            'contact_name' => 'required|string|max:255',
+            'contact_phone' => 'required|string|max:255',
+            'contact_email' => 'required|email|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         if ($request->hasFile('image')) {
             // Delete old image
-            if ($property->image) {
-                Storage::disk('public')->delete($property->image);
-            }
+            $property->deleteImage();
+            
+            // Store new image
             $path = $request->file('image')->store('properties', 'public');
             $validated['image'] = $path;
         }
@@ -68,18 +77,18 @@ class PropertyController extends Controller
         $property->update($validated);
 
         return redirect()->route('admin.properties.index')
-            ->with('success', 'Property updated successfully.');
+            ->with('success', 'Property updated successfully');
     }
 
     public function destroy(Property $property)
     {
-        if ($property->image) {
-            Storage::disk('public')->delete($property->image);
-        }
+        // Delete the property image
+        $property->deleteImage();
         
+        // Delete the property
         $property->delete();
 
         return redirect()->route('admin.properties.index')
-            ->with('success', 'Property deleted successfully.');
+            ->with('success', 'Property deleted successfully');
     }
-} 
+}

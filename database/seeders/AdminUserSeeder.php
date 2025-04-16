@@ -12,11 +12,11 @@ class AdminUserSeeder extends Seeder
     {
         User::create([
             'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
+            'email' => 'admin2@example.com',
+            'password' => Hash::make('admin123'),
             'is_admin' => true,
         ]);
 
-        
+    
     }
 } 

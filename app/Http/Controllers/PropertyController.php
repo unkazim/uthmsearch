@@ -15,6 +15,8 @@ class PropertyController extends Controller
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
         $bedrooms = $request->input('bedrooms');
+        $propertyType = $request->input('property_type');
+        $furnished = $request->input('furnished');
 
         $properties = Property::query()
             ->where('is_active', true)
@@ -34,6 +36,12 @@ class PropertyController extends Controller
             ->when($bedrooms, function ($q) use ($bedrooms) {
                 return $q->where('bedrooms', $bedrooms);
             })
+            ->when($propertyType, function ($q) use ($propertyType) {
+                return $q->where('property_type', $propertyType);
+            })
+            ->when($furnished, function ($q) use ($furnished) {
+                return $q->where('furnished', $furnished);
+            })
             ->orderBy($sortBy, $sortOrder)
             ->paginate(12);
 
@@ -44,7 +52,9 @@ class PropertyController extends Controller
             'sortOrder' => $sortOrder,
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
-            'bedrooms' => $bedrooms
+            'bedrooms' => $bedrooms,
+            'propertyType' => $propertyType,
+            'furnished' => $furnished
         ]);
     }
 
@@ -56,5 +66,15 @@ class PropertyController extends Controller
         }
 
         return view('properties.show', compact('property'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|min:10',
+        ]);
+
+        // Rest of your store logic
     }
 } 

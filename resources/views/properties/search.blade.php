@@ -62,6 +62,28 @@
                         </select>
                     </div>
 
+                    <!-- Property Type Filter -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Property Type</h3>
+                        <select name="property_type" class="w-full rounded-md border-gray-300">
+                            <option value="">Any Type</option>
+                            <option value="house" {{ request('property_type') == 'house' ? 'selected' : '' }}>House</option>
+                            <option value="apartment" {{ request('property_type') == 'apartment' ? 'selected' : '' }}>Apartment</option>
+                            <option value="room" {{ request('property_type') == 'room' ? 'selected' : '' }}>Room</option>
+                        </select>
+                    </div>
+
+                    <!-- Furnished Type Filter -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Furnished</h3>
+                        <select name="furnished" class="w-full rounded-md border-gray-300">
+                            <option value="">Any</option>
+                            <option value="yes" {{ request('furnished') == 'yes' ? 'selected' : '' }}>Yes</option>
+                            <option value="no" {{ request('furnished') == 'no' ? 'selected' : '' }}>No</option>
+                            <option value="partially" {{ request('furnished') == 'partially' ? 'selected' : '' }}>Partially</option>
+                        </select>
+                    </div>
+
                     <!-- Sort Options -->
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Sort By</h3>

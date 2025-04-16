@@ -11,6 +11,15 @@ class Review extends Model
 
     protected $fillable = ['user_id', 'property_id', 'rating', 'comment'];
 
+    protected $casts = [
+        'rating' => 'integer'
+    ];
+
+    // Add rating validation rule
+    public static $rules = [
+        'rating' => 'required|integer|min:1|max:5'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -20,4 +29,4 @@ class Review extends Model
     {
         return $this->belongsTo(Property::class);
     }
-} 
+}

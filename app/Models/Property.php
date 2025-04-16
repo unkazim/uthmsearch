@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Property extends Model
 {
@@ -25,6 +26,9 @@ class Property extends Model
         'contact_name',
         'contact_phone',
         'contact_email',
+        'address',
+        'postcode',
+        'state',
         'features',
         'is_active'
     ];
@@ -34,6 +38,19 @@ class Property extends Model
         'price' => 'decimal:2',
         'features' => 'array'
     ];
+
+    // Image handling
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? Storage::url($this->image) : '/images/placeholder.jpg';
+    }
+
+    public function deleteImage()
+    {
+        if ($this->image && Storage::exists($this->image)) {
+            Storage::delete($this->image);
+        }
+    }
 
     // Scope for active listings
     public function scopeActive($query)
@@ -61,4 +78,4 @@ class Property extends Model
     {
         return $this->reviews()->avg('rating') ?? 0;
     }
-} 
+}
